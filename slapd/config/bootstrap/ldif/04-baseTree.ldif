@@ -4,3 +4,10 @@ o: {{ LDAP_ORGANISATION }}
 objectClass: top
 objectClass: dcObject
 objectClass: organization
+
+dn: cn=admin,{{ LDAP_BASE_DN }}
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword: {{ LDAP_CONFIG_PASSWORD_ENCRYPTED }}
