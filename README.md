@@ -67,7 +67,7 @@ postalAddress: BeiJing
 initials: Test
 EOF
 ```
-## 启动 Web UI：
+## 启动 Web UI
 ```
 $ docker run -d -p 18080:80 --name phpldapadmin \
 --restart always \
