@@ -315,6 +315,7 @@ fi
 #
 # ldap client config
 #
+get_ldap_base_dn
 if [ "${LDAP_TLS,,}" == "true" ]; then
   log-helper info "Configure ldap client TLS configuration..."
   sed -i '$d' /etc/openldap/ldap.conf
