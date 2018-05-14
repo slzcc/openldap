@@ -39,7 +39,7 @@ fi
 
 # Copy CA file
 log-helper debug "Copy CA file"
-ln -sf ${DEFAULT_TLS_CA_CRT_PATH} ${LDAP_TLS_CERT_PATH}/`basename ${DEFAULT_TLS_CA_CRT_PATH}`
+cp -a ${DEFAULT_TLS_CA_CRT_PATH} ${LDAP_TLS_CERT_PATH}/`basename ${DEFAULT_TLS_CA_CRT_PATH}`
 
 # Generate CA
 log-helper debug "Generate CA"
