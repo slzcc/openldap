@@ -25,7 +25,8 @@ slzcc/openldap:0.1.1
 ```
 添加组织与用户：
 ```
-$ docker exec openldap-server cat << EOF | ldapadd -x -D "cn=admin,dc=shileizcc,dc=com" -w shileizcc  -H ldap://shileizcc.com
+$ docker exec -it openldap-server bash
+$ cat << EOF | ldapadd -x -D "cn=admin,dc=shileizcc,dc=com" -w shileizcc  -H ldap://shileizcc.com
 dn: ou=IT,dc=shileizcc,dc=com
 ou: IT
 objectClass: top
