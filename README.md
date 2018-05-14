@@ -21,7 +21,7 @@ $ docker run -d -p 389:389 -p 639:639 \
 -v /data/openldap/ldap:/var/lib/ldap \
 -v /data/openldap/slapd.d:/etc/openldap/slapd.d \
 -v /data/openldap/certs:/container/service/slapd/certs \
-slzcc/openldap:0.1.1
+slzcc/openldap:0.1.3
 ```
 添加组织与用户：
 ```
@@ -79,10 +79,10 @@ osixia/phpldapadmin:latest
 
 ## 开启 Multi Master Replication
 ```
-$ LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.1)
+$ LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.3)
 $ LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
 
-$ LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d  -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.1)
+$ LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d  -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.3)
 $ LDAP2_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP2_CID)
 
 $ docker exec $LDAP_CID bash -c "echo $LDAP2_IP ldap2.example.org >> /etc/hosts"
