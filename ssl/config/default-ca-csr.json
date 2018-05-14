@@ -1,0 +1,16 @@
+{
+  "CN": "shileizcc.com",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "O": "Shileizcc",
+      "OU": "Information Technology Dep.",
+      "L": "BeiJing",
+      "ST": "BeiJing",
+      "C": "CN"
+    }
+  ]
+}

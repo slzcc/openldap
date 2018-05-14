@@ -1,36 +1,60 @@
 # Centos-OpenLDAP
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+Project 使用的 Centos 镜像作为作为基础镜像进行构建，部分实现过程参照 https://github.com/osixia/docker-openldap 项目。
 
-#### Software Architecture
-Software architecture description
+默认镜像使用 TLS 部署 OpenLDAP，如果不需要则通过修改环境变量(slapd/default-env)进行配置即可。
 
-#### Installation
+创建 local 数据目录: 
+```
+$ mkdir -p /data/openldap/ldap /data/openldap/slapd.d /data/openldap/certs
+```
 
-1. xxxx
-2. xxxx
-3. xxxx
+启动 OpenLDAP-Server:
+`强调，hostname 是必须的，所有的配置几乎都围绕着 HOSTNAME 进行，则 LADP_DOMAIN 是定义自己的域，如果不填则表示默认(测试使用) 请合理使用!`
+```
+$ docker run -d -p 389:389 -p 639:639 \
+--restart always \
+--name openldap-server \
+--hostname shileizcc.com \
+-e LDAP_DOMAIN=shileizcc.com \
+-e LDAP_ADMIN_PASSWORD=shileizcc \
+-v /data/openldap/ldap:/var/lib/ldap \
+-v /data/openldap/slapd.d:/etc/openldap/slapd.d \
+-v /data/openldap/certs:/container/service/slapd/certs \
+slzcc/openldap:develop
+```
 
-#### Instructions
+测试 Web UI：
+```
+$ docker run -d -p 18080:80 --name phpldapadmin \
+--restart always \
+-e PHPLDAPADMIN_LDAP_HOSTS=10.140.0.2 \
+-e PHPLDAPADMIN_HTTPS=false \
+osixia/phpldapadmin:latest
+```
 
-1. xxxx
-2. xxxx
-3. xxxx
+开启 Multi Master Replication
+```
+$ LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:develop)
+$ LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
 
-#### Contribution
+$ LDAP2_CID=$(docker run --hostname ldap2.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d  -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:develop)
+$ LDAP2_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP2_CID)
 
-1. Fork the project
-2. Create Feat_xxx branch
-3. Commit your code
-4. Create Pull Request
+$ docker exec $LDAP_CID bash -c "echo $LDAP2_IP ldap2.example.org >> /etc/hosts"
+$ docker exec $LDAP2_CID bash -c "echo $LDAP_IP ldap.example.org >> /etc/hosts"
+```
+测试: 添加新用户
+```
+$ docker exec $LDAP_CID ldapadd -x -D "cn=admin,dc=example,dc=org" -w admin -f /container/service/slapd/test/new-user.ldif -H ldap://ldap.example.org -ZZ
+```
+检验是否添加用户并同步
+```
+$ docker exec $LDAP2_CID ldapsearch -x -H ldap://ldap.example.org -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin -ZZ
+# or
+$ docker exec $LDAP2_CID ldapsearch -x -H ldap://ldap2.example.org -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin -ZZ
+```
 
+可以在 slapd/config/bootstrap/ldif/custom 目录内添加自定义的 ldif，目前已经加入了部分可能使用到的 schema。
 
-#### Gitee Feature
-
-1. You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2. Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3. Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4. The most valuable open source project [GVP](https://gitee.com/gvp)
-5. The manual of Gitee [http://git.mydoc.io/](http://git.mydoc.io/)
-6. The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+如果修改修改自定义的 CA，则通过 ssl/config/ 进行修改 cfssl json 文件进行定制。(目前不支持自定义上传 CA 证书)。
