@@ -35,9 +35,9 @@ function ldap_add_or_modify (){
     sed -i "s|{{ LDAP_READONLY_USER_PASSWORD_ENCRYPTED }}|${LDAP_READONLY_USER_P:ASSWORD_ENCRYPTED}|g" $LDIF_FILE
   fi
   if grep -iq "changetype: modify" $LDIF_FILE ; then
-    ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f $LDIF_FILE >> /dev/null 2>&1 || ldapmodify -h localhost -p 389 -D cn=admin,$LDAP_BASE_DN -w "$LDAP_ADMIN_PASSWORD" -f $LDIF_FILE >> /dev/null 2>&1
+    ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f $LDIF_FILE  || ldapmodify -h localhost -p 389 -D cn=admin,$LDAP_BASE_DN -w "$LDAP_ADMIN_PASSWORD" -f $LDIF_FILE 
   else
-    ldapadd -Y EXTERNAL -Q -H ldapi:/// -f $LDIF_FILE >> /dev/null 2>&1 || ldapadd -h localhost -p 389 -D cn=admin,$LDAP_BASE_DN -w "$LDAP_ADMIN_PASSWORD" -f $LDIF_FILE >> /dev/null 2>&1
+    ldapadd -Y EXTERNAL -Q -H ldapi:/// -f $LDIF_FILE  || ldapadd -h localhost -p 389 -D cn=admin,$LDAP_BASE_DN -w "$LDAP_ADMIN_PASSWORD" -f $LDIF_FILE 
   fi
 }
 
@@ -146,11 +146,11 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
       # base schema
     if [[ "${IMPORT_ALL_BASE_SCHEMA}" == false ]];then
       for i in ${IMPORT_BASE_SCHEMA_LIST};do
-          ldapadd -Y EXTERNAL -H ldapi:/// -D "cn=config" -f ${SCHEMA_DIR}/${i}.ldif >> /dev/null 2>&1
+          ldapadd -Y EXTERNAL -H ldapi:/// -D "cn=config" -f ${SCHEMA_DIR}/${i}.ldif 
       done
     else
       for i in `ls ${SCHEMA_DIR}|egrep "*\.ldif"`; do
-          ldapadd -Y EXTERNAL -H ldapi:/// -D "cn=config" -f ${SCHEMA_DIR}/${i} >> /dev/null 2>&1
+          ldapadd -Y EXTERNAL -H ldapi:/// -D "cn=config" -f ${SCHEMA_DIR}/${i} 
       done
     fi
 
@@ -235,7 +235,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
       sed -i "s|{{ LDAP_TLS_CIPHER_SUITE }}|${LDAP_TLS_CIPHER_SUITE}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enable.ldif
       sed -i "s|{{ LDAP_TLS_VERIFY_CLIENT }}|${LDAP_TLS_VERIFY_CLIENT}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enable.ldif
 
-      ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enable.ldif >> /dev/null 2>&1
+      ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enable.ldif 
 
       [[ -f "$WAS_STARTED_WITH_TLS" ]] && rm -f "$WAS_STARTED_WITH_TLS"
       echo "export PREVIOUS_LDAP_TLS_CA_CRT_PATH=${LDAP_TLS_CA_CRT_PATH}" > $WAS_STARTED_WITH_TLS
@@ -246,7 +246,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
       # enforce TLS
       if [ "${LDAP_TLS_ENFORCE,,}" == "true" ]; then
         printf "Add enforce TLS..."
-        ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enforce-enable.ldif >> /dev/null 2>&1
+        ldapmodify -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/tls/tls-enforce-enable.ldif 
         touch $WAS_STARTED_WITH_TLS_ENFORCE
       fi
     fi
@@ -257,7 +257,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
     #
     function disableReplication() {
       sed -i "s|{{ LDAP_BACKEND }}|${LDAP_BACKEND}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-disable.ldif
-      ldapmodify -c -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-disable.ldif >> /dev/null 2>&1 || true
+      ldapmodify -c -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-disable.ldif  || true
       [[ -f "$WAS_STARTED_WITH_REPLICATION" ]] && rm -f "$WAS_STARTED_WITH_REPLICATION"
     }
 
@@ -290,7 +290,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
 
     sed -i "s|{{ LDAP_BACKEND }}|${LDAP_BACKEND}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-enable.ldif
 
-      ldapmodify -c -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-enable.ldif  >> /dev/null 2>&1 || true
+      ldapmodify -c -Y EXTERNAL -Q -H ldapi:/// -f ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-enable.ldif   || true
 
       [[ -f "$WAS_STARTED_WITH_REPLICATION" ]] && rm -f "$WAS_STARTED_WITH_REPLICATION"
       echo "export PREVIOUS_HOSTNAME=${HOSTNAME}" > $WAS_STARTED_WITH_REPLICATION
