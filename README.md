@@ -67,7 +67,7 @@ postalAddress: BeiJing
 initials: Test
 EOF
 ```
-测试 Web UI：
+## 启动 Web UI：
 ```
 $ docker run -d -p 18080:80 --name phpldapadmin \
 --restart always \
@@ -76,7 +76,7 @@ $ docker run -d -p 18080:80 --name phpldapadmin \
 osixia/phpldapadmin:latest
 ```
 
-开启 Multi Master Replication
+## 开启 Multi Master Replication
 ```
 $ LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.1)
 $ LDAP_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $LDAP_CID)
