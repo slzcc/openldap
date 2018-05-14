@@ -23,7 +23,50 @@ $ docker run -d -p 389:389 -p 639:639 \
 -v /data/openldap/certs:/container/service/slapd/certs \
 slzcc/openldap:0.1.1
 ```
+添加组织与用户：
+```
+$ cat << EOF | ldapadd -x -D "cn=admin,dc=shileizcc,dc=com" -w config  -H ldap://shileizcc.com
+dn: ou=IT,dc=shileizcc,dc=com
+ou: IT
+objectClass: top
+objectClass: organizationalUnit
 
+dn: cn=Ops,ou=IT,dc=shileizcc,dc=com
+cn: Ops
+gidNumber: 500
+objectClass: posixGroup
+objectClass: top
+
+dn: cn=shilei,cn=ops,ou=IT,dc=shileizcc,dc=com
+uid: shilei
+cn: shilei
+sn: shi
+givenName: lei
+displayName: shilei
+objectClass: posixAccount
+objectClass: top
+objectClass: person
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+uidNumber: 1009
+gidNumber: 1009
+gecos: System Manager
+loginShell: /bin/bash
+homeDirectory: /home/shilei
+userPassword: shilei
+shadowLastChange: 17654
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+shadowExpire: -1
+employeeNumber: 18002
+homePhone: 0531-xxxxxxxx
+mobile: 152xxxxxxxxx
+mail: shileizcc@126.com
+postalAddress: BeiJing
+initials: Test
+EOF
+```
 测试 Web UI：
 ```
 $ docker run -d -p 18080:80 --name phpldapadmin \
