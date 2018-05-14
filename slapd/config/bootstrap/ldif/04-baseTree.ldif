@@ -5,14 +5,14 @@ objectClass: top
 objectClass: dcObject
 objectClass: organization
 
-dn: cn=admin,{{ LDAP_BASE_DN }}
-objectClass: simpleSecurityObject
-objectClass: organizationalRole
-cn: admin
-description: LDAP administrator
-userPassword: {{ LDAP_CONFIG_PASSWORD_ENCRYPTED }}
+#dn: cn=admin,{{ LDAP_BASE_DN }}
+#objectClass: simpleSecurityObject
+#objectClass: organizationalRole
+#cn: admin
+#description: LDAP administrator
+#userPassword: {{ LDAP_CONFIG_PASSWORD_ENCRYPTED }}
 
-dn: olcDatabase={0}config,cn=config
-changetype: modify
-replace: olcAccess
-olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=extern al,cn=auth manage by * break
+#dn: olcDatabase={0}config,cn=config
+#changetype: modify
+#replace: olcAccess
+#olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=extern al,cn=auth manage by * break
