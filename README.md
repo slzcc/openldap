@@ -9,7 +9,7 @@ Project 使用的 Centos 镜像作为作为基础镜像进行构建，部分实�
 $ mkdir -p /data/openldap/ldap /data/openldap/slapd.d /data/openldap/certs
 ```
 
-启动 OpenLDAP-Server:
+## 启动 OpenLDAP Server
 `强调，hostname 是必须的，所有的配置几乎都围绕着 HOSTNAME 进行，则 LADP_DOMAIN 是定义自己的域，如果不填则表示默认(测试使用) 请合理使用!`
 ```
 $ docker run -d -p 389:389 -p 639:639 \
