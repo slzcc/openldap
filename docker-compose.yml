@@ -1,0 +1,32 @@
+version: '3'
+services:
+    openldap:
+        image: slzcc/openldap:0.1.3
+        container_name: openldap-server
+        ports:
+          - 389:389
+          - 639:639
+        environment:
+            LDAP_DOMAIN: shileizcc.com
+            LDAP_ADMIN_PASSWORD: shileizcc
+            TZ: Asia/Shanghai
+        hostname: "shileizcc.com"
+        volumes:
+          - ldap_ldap:/var/lib/ldap
+          - ldap_slapd:/etc/openldap/slapd.d
+          - ldap_certs:/container/service/slapd/certs
+    phpldapadmin:
+        image: osixia/phpldapadmin:latest
+        container_name: phpldapadmin
+        environment:
+           PHPLDAPADMIN_LDAP_HOSTS: 'openldap'
+           PHPLDAPADMIN_HTTPS: 'false'
+        ports:
+          - '8080:80'
+        depends_on:
+          - openldap
+volumes:
+    ldap_ldap:
+    ldap_slapd:
+    ldap_certs:
+
