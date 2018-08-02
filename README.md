@@ -77,6 +77,26 @@ $ docker run -d -p 18080:80 --name phpldapadmin \
 osixia/phpldapadmin:latest
 ```
 
+或者
+
+docker-compose Start
+```
+$ docker-compose up -d
+```
+
+如果访问 Web UI 出现如下错误:
+```
+openldap-server | 5b6259c2 conn=1000 fd=14 ACCEPT from IP=192.168.80.3:55744 (IP=192.168.80.2:389)
+openldap-server | 5b6259c2 conn=1000 op=0 BIND dn="cn=admin,dc=shileizcc,dc=com" method=128
+openldap-server | 5b6259c2 conn=1000 op=0 RESULT tag=97 err=49 text=
+```
+
+则重新启动 UI 即可：
+```
+$ docker-compose stop phpldapadmin
+$ docker-compose start phpldapadmin
+```
+
 ## 开启 Multi Master Replication
 ```
 $ LDAP_CID=$(docker run --hostname ldap.example.org --env LDAP_REPLICATION=true -e LDAP_DOMAIN=example.org -e LDAP_ADMIN_PASSWORD=admin -d -e LDAP_REMOVE_CONFIG_AFTER_SETUP=false  slzcc/openldap:0.1.3)
