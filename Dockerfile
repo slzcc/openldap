@@ -1,6 +1,6 @@
 FROM centos:7
 RUN yum install -y epel-release
-RUN yum install -y openldap openldap-servers openldap-clients openldap-devel compat-openldap migrationtools openssl cyrus-sasl krb5-server-ldap krb5-workstation krb5-auth-dialog krb5-libs cyrus-sasl-ldap cyrus-sasl-md5
+RUN yum install -y openldap openldap-servers openldap-clients openldap-devel compat-openldap migrationtools openssl cyrus-sasl krb5-server-ldap krb5-workstation krb5-auth-dialog krb5-libs cyrus-sasl-ldap cyrus-sasl-md5 supervisor
 RUN cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG && \
     chown -R ldap.ldap /etc/openldap/ && \
     chown -R ldap.ldap /var/lib/ldap
