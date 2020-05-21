@@ -264,7 +264,6 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
     if [ "${LDAP_REPLICATION,,}" == "true" ]; then
 
       printf "Add replication config..."
-      disableReplication || true
 
       i=1
     for host in `echo $LDAP_REPLICATION_HOSTS`;do
