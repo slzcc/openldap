@@ -267,7 +267,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
 
       i=1
 
-      if [ "LDAP_REPLICATION_TYPE" == "Multi" ];then
+      if [ "${LDAP_REPLICATION_TYPE}" == "Multi" ];then
         for host in `echo $LDAP_REPLICATION_HOSTS`;do
           if [[ $( basename ${host}) == $HOSTNAME ]];then
             sed -i "s|{{ LDAP_REPLICATION_HOSTS }}|olcServerID: $i ${host}\n{{ LDAP_REPLICATION_HOSTS }}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-enable.ldif
@@ -295,7 +295,7 @@ if [[ -z "$(ls -A /etc/openldap/slapd.d/)" ]] && [[ -z "$(ls -A /var/lib/ldap)" 
 
         [[ -f "$WAS_STARTED_WITH_REPLICATION" ]] && rm -f "$WAS_STARTED_WITH_REPLICATION"
 
-      elif [ "LDAP_REPLICATION_TYPE" == "Syncrepl" ];then
+      elif [ "${LDAP_REPLICATION_TYPE}" == "Syncrepl" ];then
         for host in `echo $LDAP_REPLICATION_HOSTS`;do
           if [[ $( basename ${host}) != $HOSTNAME ]];then
             sed -i "s|{{ LDAP_REPLICATION_HOSTS }}|olcServerID: $i ${host}\n{{ LDAP_REPLICATION_HOSTS }}|g" ${CONTAINER_SERVICE_DIR}/slapd/config/replication/replication-enable.ldif
